@@ -1,0 +1,4 @@
+dj_id,cuit,anio,periodo_inicio_cierre,bien_descripcion,bien_tipo,bien_origen_fondos,bien_titularidad,bien_importe
+1001,27123456780,2023,C,Inmueble en CABA,Inmueble,Trabajo,100%,"10.000.000,00"
+1001,27123456780,2023,C,Automovil 2018,Rodado,Trabajo,50%,"3.000.000,00"
+1002,20111111112,2023,I,Plazo fijo en pesos,Activo financiero,Herencia,100%,"5.000.000,00"

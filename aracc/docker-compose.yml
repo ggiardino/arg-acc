@@ -1,0 +1,98 @@
+# ============================================================
+#  ar-acc — Stack de desarrollo local
+#
+#  Servicios:
+#    neo4j        Base de datos de grafos (con APOC).
+#    schema-init  Job de un solo uso: aplica constraints e índices.
+#    etl          Runtime de los pipelines (perfil "etl", on-demand).
+#
+#  Uso rápido:
+#    cp .env.example .env       # y editá NEO4J_PASSWORD
+#    docker compose up -d neo4j
+#    docker compose run --rm schema-init
+#    docker compose run --rm seed-demo   # grafo de demo sintético
+#    docker compose run --rm etl run ddjj --anio 2023 --limit 100
+#
+#  Ver SETUP.md para la guía completa.
+# ============================================================
+
+services:
+  neo4j:
+    container_name: aracc-neo4j
+    image: neo4j:5-community
+    ports:
+      - "7474:7474"   # Neo4j Browser
+      - "7687:7687"   # protocolo Bolt
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-aracc-dev-pass}
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_server_memory_heap_initial__size: ${NEO4J_HEAP_INITIAL:-512m}
+      NEO4J_server_memory_heap_max__size: ${NEO4J_HEAP_MAX:-1G}
+      NEO4J_server_memory_pagecache_size: ${NEO4J_PAGECACHE:-512m}
+    volumes:
+      - neo4j-data:/data
+      - ./schema:/schema:ro
+    healthcheck:
+      test: ["CMD", "cypher-shell", "-u", "neo4j",
+             "-p", "${NEO4J_PASSWORD:-aracc-dev-pass}", "RETURN 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # Job idempotente: aplica el esquema y termina.
+  schema-init:
+    container_name: aracc-schema-init
+    image: neo4j:5-community
+    entrypoint: ["bash", "-c"]
+    command:
+      - >
+        cypher-shell -a bolt://neo4j:7687 -u neo4j
+        -p "${NEO4J_PASSWORD:-aracc-dev-pass}"
+        --file /schema/init-neo4j.cypher
+        && echo 'Esquema ar-acc aplicado.'
+    volumes:
+      - ./schema:/schema:ro
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    restart: "no"
+
+  # Job idempotente: carga el grafo de demostración SINTÉTICO.
+  # Útil para explorar el grafo y las queries de detección sin
+  # descargar fuentes reales.
+  seed-demo:
+    container_name: aracc-seed-demo
+    image: neo4j:5-community
+    entrypoint: ["bash", "-c"]
+    command:
+      - >
+        cypher-shell -a bolt://neo4j:7687 -u neo4j
+        -p "${NEO4J_PASSWORD:-aracc-dev-pass}"
+        --file /schema/seed-demo.cypher
+        && echo 'Grafo de demo (sintético) cargado.'
+    volumes:
+      - ./schema:/schema:ro
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    restart: "no"
+
+  # Runtime de pipelines. No arranca solo: usar `docker compose run`.
+  etl:
+    container_name: aracc-etl
+    build: .
+    profiles: ["etl"]
+    environment:
+      NEO4J_URI: bolt://neo4j:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: ${NEO4J_PASSWORD:-aracc-dev-pass}
+      NEO4J_DATABASE: ${NEO4J_DATABASE:-neo4j}
+      DATA_DIR: /data
+    volumes:
+      - ./data:/data
+    depends_on:
+      neo4j:
+        condition: service_healthy
+
+volumes:
+  neo4j-data:

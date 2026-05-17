@@ -1,0 +1,2 @@
+dj_id,cuit,anio,periodo_inicio_cierre,deuda_tipo,deuda_descripcion,deuda_radicacion_localizacion,deuda_clasificacion,deuda_importe
+1001,27123456780,2023,C,Hipotecario,Credito hipotecario banco nacion,Argentina,Comun,"2.000.000,00"

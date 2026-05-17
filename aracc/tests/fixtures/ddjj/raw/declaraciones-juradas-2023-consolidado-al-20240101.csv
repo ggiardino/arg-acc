@@ -1,0 +1,4 @@
+dj_id,cuit,anio,tipo_declaracion_jurada_id,tipo_declaracion_jurada_descripcion,rectificativa,funcionario_apellido_nombre,sector,organismo,cargo,desde,proveedor_contratista,total_bienes_final,total_deudas_final
+1001,27123456780,2023,2,Anual,0,GOMEZ JUAN,Publico,Ministerio de Economia,Director Nacional,2020-01,NO,"15.000.000,50","2.000.000,00"
+1002,20111111112,2023,2,Anual,1,PEREZ MARIA,Publico,Ministerio de Salud,Subsecretaria,2019-03,SI,"8.500.000,00",
+1003,99,2023,2,Anual,0,FILA INVALIDA,Publico,,,,,,
