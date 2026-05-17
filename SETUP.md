@@ -45,9 +45,11 @@ NEO4J_PASSWORD=tu_password_de_neo4j
 NEO4J_DATABASE=neo4j
 
 # --- API Keys de los proveedores de IA --------------------------------------
-# Completá al menos una; podés dejar las otras vacías.
+# Pegá tu clave real a la derecha del signo "=" en al menos una de estas
+# variables (la que corresponda al proveedor elegido en LLM_PROVIDER).
+# Dejá vacías las que no uses.
 OPENAI_API_KEY=
-GROQ_API_KEY=tu_api_key_de_groq
+GROQ_API_KEY=
 ANTHROPIC_API_KEY=
 
 # --- Selector de proveedor y modelo -----------------------------------------
