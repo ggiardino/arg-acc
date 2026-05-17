@@ -7,7 +7,26 @@ corre en Docker; no necesitás instalar Neo4j ni Python en el host.
 
 - Docker 24+ y Docker Compose v2.
 - ~2 GB de RAM libres para el dev stack (más para el grafo completo).
-- Opcional, para desarrollo sin Docker: Python 3.12+.
+- Opcional, para desarrollo sin Docker: Python 3.11+.
+
+## Inicio rápido (un comando)
+
+Si tenés Docker y `make`, esto levanta Neo4j, aplica el esquema y carga
+un **grafo de demostración sintético** — sin descargar ninguna fuente:
+
+```bash
+cd aracc
+cp .env.example .env      # editá NEO4J_PASSWORD
+make demo
+```
+
+Al terminar, abrí http://localhost:7474 (usuario `neo4j`, la contraseña
+de tu `.env`) y pegá las queries de
+[`queries/demo-deteccion.cypher`](queries/demo-deteccion.cypher): cada
+una devuelve filas que muestran las reglas de detección en acción.
+
+`make help` lista todos los atajos. Los pasos manuales equivalentes
+están abajo.
 
 ## 1. Configurar el entorno
 
@@ -40,7 +59,19 @@ docker compose run --rm schema-init
 Debe imprimir `Esquema ar-acc aplicado.`. Podés re-ejecutarlo sin riesgo
 (todas las sentencias usan `IF NOT EXISTS`).
 
-## 4. Ejecutar un pipeline ETL
+## 4. Cargar el grafo de demostración (opcional)
+
+Para explorar el grafo sin descargar fuentes reales, cargá un conjunto
+de datos **sintético** (ficticio):
+
+```bash
+docker compose run --rm seed-demo
+```
+
+Luego pegá las queries de `queries/demo-deteccion.cypher` en el Neo4j
+Browser para ver las reglas de detección con resultados.
+
+## 5. Ejecutar un pipeline ETL
 
 El runtime del ETL es un contenedor on-demand (perfil `etl`):
 
@@ -58,7 +89,7 @@ docker compose run --rm etl run ddjj --anio 2023 --limit 500
 Cada corrida deja un nodo `:CorridaIngesta` en el grafo con su estado y
 métricas (auditoría e idempotencia).
 
-## 5. Explorar el grafo
+## 6. Explorar el grafo
 
 En el Neo4j Browser (http://localhost:7474):
 

@@ -16,16 +16,22 @@ niveles del Estado (nacional, provincial y municipal).
 
 ```
 aracc/
-├── docker-compose.yml         # Stack local: Neo4j + schema-init + ETL
+├── docker-compose.yml         # Stack local: Neo4j + schema + seed + ETL
 ├── Dockerfile                 # Runtime del ETL
+├── Makefile                   # Atajos: make demo / make test / ...
 ├── pyproject.toml             # Paquete aracc_etl + CLI `aracc-etl`
 ├── SETUP.md                   # Guía de setup local paso a paso
-├── schema/init-neo4j.cypher   # Esquema del grafo: constraints + índices
-├── queries/deteccion.cypher   # Queries Cypher de detección de riesgo
+├── schema/
+│   ├── init-neo4j.cypher      # Esquema del grafo: constraints + índices
+│   └── seed-demo.cypher       # Grafo de demostración SINTÉTICO
+├── queries/
+│   ├── deteccion.cypher       # Queries de detección (parametrizadas)
+│   └── demo-deteccion.cypher  # Idem, listas para correr sobre la demo
 ├── tests/                     # Tests (no requieren Neo4j)
 └── aracc_etl/                 # Paquete Python instalable
     ├── base.py                # Clase Pipeline (extract/transform/load)
     ├── runner.py              # CLI `aracc-etl run <fuente>`
+    ├── download.py            # Descarga resiliente + resolución CKAN
     ├── flows.py               # Flujos Prefect (scheduling)
     ├── sources.yml            # Registro declarativo de fuentes
     ├── transforms/            # Normalización CUIT/CUIL y montos AR
@@ -36,7 +42,8 @@ aracc/
         └── declaraciones_juradas.py
 ```
 
-Ver **[SETUP.md](SETUP.md)** para levantar el stack en minutos.
+Ver **[SETUP.md](SETUP.md)** para levantar el stack en minutos. Atajo:
+`make demo` deja un grafo navegable con datos sintéticos.
 
 ## Documentación
 

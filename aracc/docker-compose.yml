@@ -10,7 +10,8 @@
 #    cp .env.example .env       # y editá NEO4J_PASSWORD
 #    docker compose up -d neo4j
 #    docker compose run --rm schema-init
-#    docker compose run --rm etl run ddjj --limit 100
+#    docker compose run --rm seed-demo   # grafo de demo sintético
+#    docker compose run --rm etl run ddjj --anio 2023 --limit 100
 #
 #  Ver SETUP.md para la guía completa.
 # ============================================================
@@ -45,10 +46,30 @@ services:
     entrypoint: ["bash", "-c"]
     command:
       - >
-        cypher-shell -a neo4j://neo4j:7687 -u neo4j
+        cypher-shell -a bolt://neo4j:7687 -u neo4j
         -p "${NEO4J_PASSWORD:-aracc-dev-pass}"
         --file /schema/init-neo4j.cypher
         && echo 'Esquema ar-acc aplicado.'
+    volumes:
+      - ./schema:/schema:ro
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    restart: "no"
+
+  # Job idempotente: carga el grafo de demostración SINTÉTICO.
+  # Útil para explorar el grafo y las queries de detección sin
+  # descargar fuentes reales.
+  seed-demo:
+    container_name: aracc-seed-demo
+    image: neo4j:5-community
+    entrypoint: ["bash", "-c"]
+    command:
+      - >
+        cypher-shell -a bolt://neo4j:7687 -u neo4j
+        -p "${NEO4J_PASSWORD:-aracc-dev-pass}"
+        --file /schema/seed-demo.cypher
+        && echo 'Grafo de demo (sintético) cargado.'
     volumes:
       - ./schema:/schema:ro
     depends_on:

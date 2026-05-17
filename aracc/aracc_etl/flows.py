@@ -14,7 +14,6 @@ from __future__ import annotations
 import os
 
 from prefect import flow, task
-from prefect.schedules import Cron
 
 from aracc_etl.runner import PIPELINES, _driver
 
@@ -47,5 +46,6 @@ def ingesta_mensual() -> None:
 
 
 if __name__ == "__main__":
-    ingesta_diaria.serve(name="diaria", schedule=Cron("0 6 * * *"))
-    ingesta_mensual.serve(name="mensual", schedule=Cron("0 7 1 * *"))
+    # `cron` como string es estable en Prefect 3.x.
+    ingesta_diaria.serve(name="diaria", cron="0 6 * * *")
+    ingesta_mensual.serve(name="mensual", cron="0 7 1 * *")
