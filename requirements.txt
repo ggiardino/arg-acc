@@ -1,0 +1,23 @@
+# ar-acc — réplica argentina y ligera del framework acc/bro de OCCRP
+# Dependencias 100% Python nativo (Zero-Docker).
+
+# --- Base de datos de grafos ---
+neo4j>=5.20,<6.0
+
+# --- Configuración ---
+pydantic-settings>=2.2,<3.0
+
+# --- API serverless / despliegue dual ---
+fastapi>=0.110,<1.0
+uvicorn[standard]>=0.29,<1.0
+
+# --- Dashboard local ---
+streamlit>=1.33,<2.0
+
+# --- Capa de IA / RAG sobre grafos ---
+langchain>=0.2.0,<0.4.0
+langchain-community>=0.2.0,<0.4.0
+langchain-neo4j>=0.1.0,<1.0
+langchain-openai>=0.1.0,<1.0
+langchain-anthropic>=0.1.0,<1.0
+langchain-groq>=0.1.0,<1.0
