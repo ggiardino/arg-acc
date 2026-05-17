@@ -41,6 +41,9 @@ CREATE CONSTRAINT ddjj_id_unique IF NOT EXISTS
 CREATE CONSTRAINT bien_id_unique IF NOT EXISTS
   FOR (b:BienDeclarado) REQUIRE b.bien_id IS UNIQUE;
 
+CREATE CONSTRAINT deuda_id_unique IF NOT EXISTS
+  FOR (d:Deuda) REQUIRE d.deuda_id IS UNIQUE;
+
 CREATE CONSTRAINT sancion_id_unique IF NOT EXISTS
   FOR (s:Sancion) REQUIRE s.sancion_id IS UNIQUE;
 
@@ -151,6 +154,12 @@ CREATE INDEX bien_tipo IF NOT EXISTS
 CREATE INDEX bien_valor IF NOT EXISTS
   FOR (b:BienDeclarado) ON (b.valor);
 
+CREATE INDEX deuda_tipo IF NOT EXISTS
+  FOR (d:Deuda) ON (d.tipo);
+
+CREATE INDEX deuda_importe IF NOT EXISTS
+  FOR (d:Deuda) ON (d.importe);
+
 // ── Índices: Sanción / Boletín / Justicia ──────────────────
 CREATE INDEX sancion_tipo IF NOT EXISTS
   FOR (s:Sancion) ON (s.tipo);
@@ -199,6 +208,7 @@ CREATE INDEX adjudicataria_fecha IF NOT EXISTS
 
 // ── Índice fulltext de búsqueda global ─────────────────────
 CREATE FULLTEXT INDEX entidad_busqueda IF NOT EXISTS
-  FOR (n:Persona|Empresa|Funcionario|Organismo|Contrato|Licitacion|Partido|Candidatura|Sancion|ActoBoletin|CausaJudicial)
+  FOR (n:Persona|Empresa|Funcionario|Organismo|Contrato|Licitacion|Partido|Candidatura|Sancion|ActoBoletin|CausaJudicial|DeclaracionJurada|BienDeclarado|Deuda)
   ON EACH [n.nombre, n.razon_social, n.cuit, n.cuil_parcial, n.dni,
-           n.objeto, n.denominacion, n.caratula, n.titulo, n.descripcion];
+           n.objeto, n.denominacion, n.caratula, n.titulo, n.descripcion,
+           n.cargo];

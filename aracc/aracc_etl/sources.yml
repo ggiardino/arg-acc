@@ -36,14 +36,16 @@ sources:
     estado: not_built
     pipeline: aracc_etl.pipelines.contratar
 
-  - source_id: ddjj_oa
-    nombre: Declaraciones Juradas Patrimoniales — Oficina Anticorrupción
-    url: https://www.argentina.gob.ar/anticorrupcion/declaracionesjuradas
+  - source_id: ddjj
+    nombre: Declaraciones Juradas Patrimoniales Integrales (carácter público)
+    url: https://datos.jus.gob.ar/dataset/declaraciones-juradas-patrimoniales-integrales
+    api: https://datos.jus.gob.ar/api/3/  # CKAN REST
+    dataset_id: declaraciones-juradas-patrimoniales-integrales
     nivel: nacional
-    formato: [csv, solicitud]
-    licencia: "Ley 25.188 de Ética en el Ejercicio de la Función Pública"
+    formato: [csv, api]
+    licencia: "Ley 25.188 de Ética en la Función Pública (mod. Ley 26.857)"
     cadencia: anual
-    estado: partial
+    estado: loaded
     pipeline: aracc_etl.pipelines.declaraciones_juradas
 
   - source_id: afip_padron

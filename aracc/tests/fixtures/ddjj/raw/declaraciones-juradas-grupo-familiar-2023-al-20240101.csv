@@ -1,0 +1,3 @@
+dj_id,cuit,anio,funcionario_apellido_nombre,familiar_apellido_nombre,familiar_cuit,familiar_genero,familiar_fecha_nacimiento,familiar_parentesco
+1001,27123456780,2023,GOMEZ JUAN,GOMEZ ANA,27999999994,F,1985-05-05,Conyuge
+1002,20111111112,2023,PEREZ MARIA,PEREZ SIN CUIT,0,M,2010-01-01,Hijo
