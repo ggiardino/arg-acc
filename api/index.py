@@ -22,8 +22,10 @@ from pydantic import BaseModel, Field  # noqa: E402
 
 from agent import query_corruption_graph  # noqa: E402
 from config.settings import settings  # noqa: E402
+from dashboard.web import router as dashboard_router  # noqa: E402
 
 app = FastAPI(title="ar-acc", description="Investigación de corrupción sobre grafos")
+app.include_router(dashboard_router)
 
 
 class ChatRequest(BaseModel):
@@ -74,6 +76,11 @@ INDEX_HTML = """<!doctype html>
         Réplica argentina y ligera del framework acc/bro de OCCRP.
         Consultá el grafo de corrupción en lenguaje natural.
       </p>
+      <a href="/dashboard"
+        class="inline-block mt-3 text-sm bg-slate-700 hover:bg-slate-600
+               text-white rounded-lg px-4 py-1.5 transition">
+        Abrir el dashboard de inconsistencias en DDJJ &rarr;
+      </a>
     </div>
   </header>
 
