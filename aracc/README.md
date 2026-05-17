@@ -16,19 +16,27 @@ niveles del Estado (nacional, provincial y municipal).
 
 ```
 aracc/
+├── docker-compose.yml         # Stack local: Neo4j + schema-init + ETL
+├── Dockerfile                 # Runtime del ETL
+├── pyproject.toml             # Paquete aracc_etl + CLI `aracc-etl`
+├── SETUP.md                   # Guía de setup local paso a paso
 ├── schema/init-neo4j.cypher   # Esquema del grafo: constraints + índices
 ├── queries/deteccion.cypher   # Queries Cypher de detección de riesgo
-└── etl/
+├── tests/                     # Tests (no requieren Neo4j)
+└── aracc_etl/                 # Paquete Python instalable
     ├── base.py                # Clase Pipeline (extract/transform/load)
     ├── runner.py              # CLI `aracc-etl run <fuente>`
     ├── flows.py               # Flujos Prefect (scheduling)
     ├── sources.yml            # Registro declarativo de fuentes
     ├── transforms/            # Normalización CUIT/CUIL y montos AR
+    ├── entity_resolution/     # Resolución de entidades (linkage)
     └── pipelines/             # Un módulo por fuente
         ├── datos_gob_ar.py
         ├── comprar.py
         └── declaraciones_juradas.py
 ```
+
+Ver **[SETUP.md](SETUP.md)** para levantar el stack en minutos.
 
 ## Documentación
 
