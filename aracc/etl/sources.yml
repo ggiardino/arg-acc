@@ -1,0 +1,133 @@
+# ============================================================
+#  ar-acc — Registro declarativo de fuentes de datos
+#
+#  estado: loaded | partial | stale | blocked | not_built
+#  Cada fila not_built es una invitación abierta a contribuir.
+# ============================================================
+
+sources:
+  - source_id: datos_gob_ar
+    nombre: Portal Nacional de Datos Abiertos
+    url: https://datos.gob.ar/
+    api: https://datos.gob.ar/api/3/  # CKAN REST
+    nivel: nacional
+    formato: [csv, json, api]
+    licencia: "Open Data — Decreto 117/2016"
+    cadencia: variable
+    estado: partial
+    pipeline: aracc_etl.pipelines.datos_gob_ar
+
+  - source_id: comprar
+    nombre: COMPR.AR — Compras públicas nacionales
+    url: https://comprar.gob.ar/
+    nivel: nacional
+    formato: [csv, portal]
+    licencia: "Acceso a la Información Pública — Ley 27.275"
+    cadencia: mensual
+    estado: partial
+    pipeline: aracc_etl.pipelines.comprar
+
+  - source_id: contratar
+    nombre: CONTRAT.AR — Obra pública nacional
+    url: https://contratar.gob.ar/
+    nivel: nacional
+    formato: [csv, portal]
+    cadencia: mensual
+    estado: not_built
+    pipeline: aracc_etl.pipelines.contratar
+
+  - source_id: ddjj_oa
+    nombre: Declaraciones Juradas Patrimoniales — Oficina Anticorrupción
+    url: https://www.argentina.gob.ar/anticorrupcion/declaracionesjuradas
+    nivel: nacional
+    formato: [csv, solicitud]
+    licencia: "Ley 25.188 de Ética en el Ejercicio de la Función Pública"
+    cadencia: anual
+    estado: partial
+    pipeline: aracc_etl.pipelines.declaraciones_juradas
+
+  - source_id: afip_padron
+    nombre: AFIP/ARCA — Padrón CUIT y estados administrativos
+    url: https://www.afip.gob.ar/
+    api: https://soa.afip.gob.ar/  # constancia de inscripción
+    nivel: nacional
+    formato: [api, padron]
+    cadencia: diaria
+    estado: not_built
+    pipeline: aracc_etl.pipelines.afip_padron
+
+  - source_id: boletin_oficial
+    nombre: Boletín Oficial de la República Argentina (BORA)
+    url: https://www.boletinoficial.gob.ar/
+    nivel: nacional
+    formato: [api, html]
+    cadencia: diaria
+    estado: not_built
+    pipeline: aracc_etl.pipelines.boletin_oficial
+
+  - source_id: cne_candidatos
+    nombre: Cámara Nacional Electoral — Candidaturas
+    url: https://www.electoral.gob.ar/
+    nivel: nacional
+    formato: [csv]
+    cadencia: por_eleccion
+    estado: not_built
+    pipeline: aracc_etl.pipelines.cne_candidatos
+
+  - source_id: cne_aportes
+    nombre: Aportes y financiamiento de campañas
+    url: https://www.electoral.gob.ar/
+    nivel: nacional
+    formato: [csv]
+    licencia: "Ley 26.215 de Financiamiento de los Partidos Políticos"
+    cadencia: por_eleccion
+    estado: not_built
+    pipeline: aracc_etl.pipelines.cne_aportes
+
+  - source_id: presupuesto_abierto
+    nombre: Presupuesto Abierto
+    url: https://www.presupuestoabierto.gob.ar/
+    api: https://www.presupuestoabierto.gob.ar/sici/api-documentacion
+    nivel: nacional
+    formato: [api, csv]
+    cadencia: mensual
+    estado: not_built
+    pipeline: aracc_etl.pipelines.presupuesto_abierto
+
+  - source_id: georef
+    nombre: API Georef — Normalización geográfica
+    url: https://www.argentina.gob.ar/datos-abiertos
+    api: https://apis.datos.gob.ar/georef/api/
+    nivel: nacional
+    formato: [api]
+    cadencia: estable
+    estado: partial
+    pipeline: aracc_etl.pipelines.georef
+
+  - source_id: justicia
+    nombre: Datos abiertos del Poder Judicial / Ministerio de Justicia
+    url: https://datos.jus.gob.ar/
+    nivel: nacional
+    formato: [csv, api]
+    cadencia: variable
+    estado: not_built
+    pipeline: aracc_etl.pipelines.justicia
+
+  # ── Subnacional (federalismo) ──────────────────────────────
+  - source_id: caba_compras
+    nombre: Buenos Aires Compras (BAC) — CABA
+    url: https://data.buenosaires.gob.ar/
+    nivel: provincial
+    formato: [csv, api]
+    cadencia: mensual
+    estado: not_built
+    pipeline: aracc_etl.pipelines.provincial.caba
+
+  - source_id: pba_compras
+    nombre: PBA Compra — Provincia de Buenos Aires
+    url: https://pbac.cgp.gba.gov.ar/
+    nivel: provincial
+    formato: [portal]
+    cadencia: mensual
+    estado: not_built
+    pipeline: aracc_etl.pipelines.provincial.pba
