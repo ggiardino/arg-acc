@@ -133,7 +133,69 @@ etiquetas y relaciones del grafo (`Funcionario`, `VIAJO_A`, `GANO_CONTRATO`).
 
 ---
 
-## 6. Estructura del proyecto
+## 6. Dashboard de inconsistencias en Declaraciones Juradas
+
+Además del chat, ar-acc incluye un **dashboard estilo terminal** navegable por
+secciones jerárquicas que detecta inconsistencias en las Declaraciones Juradas
+Patrimoniales Integrales (Ley 25.188). Se abre en **`/dashboard`** (hay un
+botón en la página principal).
+
+Para levantarlo localmente en Windows, hacé doble clic en **`run_dashboard.bat`**
+y abrí <http://localhost:8000/dashboard>. En la nube (Vercel) queda disponible
+directamente en `tu-proyecto.vercel.app/dashboard`.
+
+> **Importante:** cada hallazgo es una **hipótesis a verificar** contra la
+> fuente oficial citada. No constituye prueba ni imputación. Rige la
+> presunción de inocencia.
+
+### Cómo se navega
+
+Secciones: `organismos` · `personas` · `inconsistencias`. Se recorre con el
+teclado (`↑`/`↓` mover, `Enter` abrir, `←` subir) o con comandos: `ls`,
+`cd N`, `cd ..`, `find TEXTO`, `help`.
+
+### Detectores incluidos
+
+| Detector | Qué marca |
+|---|---|
+| Salto patrimonial | El patrimonio declarado crece +50% entre dos DDJJ consecutivas |
+| Descuadre interno | El total de bienes no coincide con la suma de los bienes individuales |
+| Funcionario-proveedor | La persona se declara proveedora del Estado mientras ejerce un cargo |
+| Años faltantes | Hay años intermedios sin DDJJ presentada |
+| Rectificativa | La declaración fue rectificada después de presentada |
+
+### Opción A — Cargar datos públicos REALES
+
+El cargador toma las DDJJ del portal oficial de la Justicia Argentina
+(`datos.jus.gob.ar`):
+
+```bash
+# Descarga automática del año (requiere salida a internet):
+python pipelines/import_ddjj_real.py --anio 2023
+
+# Si tu red bloquea el portal: descargá los CSV del dataset manualmente desde
+# https://datos.jus.gob.ar/dataset/declaraciones-juradas-patrimoniales-integrales
+# dejalos en data/ddjj/raw/ y luego corré:
+python pipelines/import_ddjj_real.py --anio 2023 --offline
+```
+
+Cargá varios años (`--anio 2022`, `--anio 2023`, …) para que el detector de
+salto patrimonial pueda comparar declaraciones consecutivas.
+
+### Opción B — Datos de demostración (previsualizar la UI)
+
+Para ver el dashboard funcionando ya, sin esperar la ingesta real, aplicá el
+grafo sintético de demo (datos ficticios, ninguna persona es real):
+
+```bash
+cypher-shell -u neo4j -p TU_PASSWORD -f dashboard/seed_demo.cypher
+```
+
+Reproduce los 5 detectores con legisladores ficticios.
+
+---
+
+## 7. Estructura del proyecto
 
 ```
 ar-acc/
@@ -145,20 +207,28 @@ ar-acc/
 ├── config/
 │   └── settings.py               # Configuración centralizada (.env)
 ├── pipelines/
-│   └── import_to_neo4j.py        # Ingesta del dataset simulado
+│   ├── import_to_neo4j.py        # Ingesta del dataset simulado (chat)
+│   └── import_ddjj_real.py       # Ingesta de DDJJ reales (dashboard)
+├── dashboard/
+│   ├── service.py                # Motor de detección de inconsistencias
+│   ├── web.py                    # Rutas FastAPI del dashboard
+│   ├── terminal.html             # Interfaz web estilo terminal
+│   └── seed_demo.cypher          # Grafo sintético de demostración
 ├── web/
 │   └── app_streamlit.py          # Dashboard local interactivo
 └── api/
-    └── index.py                  # FastAPI + frontend para Vercel
+    └── index.py                  # FastAPI + frontend + dashboard
 ```
 
 ---
 
-## 7. Solución de problemas
+## 8. Solución de problemas
 
 | Síntoma | Causa probable / Solución |
 |---|---|
 | `No se pudo conectar a Neo4j` | Revisá `NEO4J_URI`, usuario y contraseña en `.env`. En Aura usá el prefijo `neo4j+s://`. |
 | `Falta la API Key '...'` | Cargá la key en el `.env` o pegala en la barra lateral / interfaz web. |
-| El grafo aparece vacío | Ejecutá `python -m pipelines.import_to_neo4j`. |
+| El grafo aparece vacío | Ejecutá `python -m pipelines.import_to_neo4j` (chat) o `python pipelines/import_ddjj_real.py --anio 2023` (dashboard). |
+| El dashboard dice "ERROR DE CONEXIÓN" | Neo4j no está activo o el `.env` apunta mal. |
+| No se pudo descargar del portal oficial | Descargá los CSV a mano y usá `--offline` (ver sección 6). |
 | `python` no se reconoce | Instalá Python 3.10+ y marcá "Add to PATH" durante la instalación. |
